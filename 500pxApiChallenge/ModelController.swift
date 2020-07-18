@@ -17,19 +17,31 @@ import UIKit
  There is no need to actually create view controllers for each page in advance -- indeed doing so incurs unnecessary overhead. Given the data model, these methods create, configure, and return a new view controller on demand.
  */
 
-
 class ModelController: NSObject, UIPageViewControllerDataSource {
 
+    // TODO: make ScreenZoom variable react to pinches so it keeps track of the screen zoom level (1, 2, 3, ...)
+    var zoomLevel: Int = 1 {
+        didSet {
+            zoomLevel = max(kMaxZoomLevel, min(zoomLevel, kMinZoomLevel))
+            self.refreshPageData()
+        }
+    }
+    
     var pageData: [String] = []
-
-
+    var images: [UIImage]
+    
     override init() {
+        images = []
+        
         super.init()
-        // Create the data model.
-        let dateFormatter = DateFormatter()
-        pageData = dateFormatter.monthSymbols
+        refreshPageData()
     }
 
+    // Eventually this will update every view to reflect the zoom level? We shall see...
+    func refreshPageData() {
+        pageData = Array(1...100).map({ "Popular Images Page \($0)" })
+    }
+    
     func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
         // Return the data view controller for the given index.
         if (self.pageData.count == 0) || (index >= self.pageData.count) {
@@ -38,14 +50,15 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
 
         // Create a new view controller and pass suitable data.
         let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
-        dataViewController.dataObject = self.pageData[index]
+        dataViewController.updateViewWith(dataTitle: pageData[index], images: [])
+        
         return dataViewController
     }
 
     func indexOfViewController(_ viewController: DataViewController) -> Int {
         // Return the index of the given data view controller.
         // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
-        return pageData.firstIndex(of: viewController.dataObject) ?? NSNotFound
+        return pageData.firstIndex(of: viewController.dataTitle) ?? NSNotFound
     }
 
     // MARK: - Page View Controller Data Source
@@ -57,6 +70,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         }
         
         index -= 1
+        
         return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 
@@ -67,9 +81,11 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         }
         
         index += 1
+        
         if index == self.pageData.count {
             return nil
         }
+        
         return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 

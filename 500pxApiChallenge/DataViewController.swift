@@ -9,21 +9,25 @@
 import UIKit
 
 class DataViewController: UIViewController {
-
     @IBOutlet weak var dataLabel: UILabel!
-    var dataObject: String = ""
-
-
+    
+    var dataTitle: String = ""
+    var images: [Image] = []
+    
+    func updateViewWith(dataTitle: String, images: [Image]) {
+        self.dataTitle = dataTitle
+        self.images = images
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        // ie, this is where we will grab the images.
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.dataLabel!.text = dataObject
+        self.dataLabel!.text = dataTitle
     }
-
-
 }
 
