@@ -1,0 +1,6 @@
+framework module Pods_500pxApiChallengeTests {
+  umbrella header "Pods-500pxApiChallengeTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

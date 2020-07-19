@@ -7,16 +7,31 @@
 //
 
 import UIKit
+import RxSwift
 
 class DataViewController: UIViewController {
     @IBOutlet weak var dataLabel: UILabel!
     
+    var pageNumber: Int = 1
+    var imagesSubject = BehaviorSubject<[Image]>(value: [])
     var dataTitle: String = ""
-    var images: [Image] = []
+    var images: [Image] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateImagesView()
+            }
+        }
+    }
+    var bag = DisposeBag()
     
-    func updateViewWith(dataTitle: String, images: [Image]) {
-        self.dataTitle = dataTitle
-        self.images = images
+    func updateViewWith(feature: String, pageNumber: Int, imagesSubject: BehaviorSubject<[Image]>) {
+        self.pageNumber = pageNumber
+        self.dataTitle = "\(feature.capitalized) Images Page \(pageNumber)"
+        self.imagesSubject = imagesSubject
+        
+        imagesSubject.subscribe(onNext: { [weak self] images in
+            self?.images = images
+        }).disposed(by: bag)
     }
     
     override func viewDidLoad() {
@@ -28,6 +43,10 @@ class DataViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.dataLabel!.text = dataTitle
+    }
+    
+    func updateImagesView() {
+        
     }
 }
 

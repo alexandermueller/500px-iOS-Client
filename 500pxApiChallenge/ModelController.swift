@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 /*
  A controller object that manages a simple model -- a collection of month names.
@@ -17,40 +18,41 @@ import UIKit
  There is no need to actually create view controllers for each page in advance -- indeed doing so incurs unnecessary overhead. Given the data model, these methods create, configure, and return a new view controller on demand.
  */
 
-class ModelController: NSObject, UIPageViewControllerDataSource {
+class PageData {
+    var title: String = ""
+    var images: [Image] = []
+    
+    init(title: String, images: [Image]) {
+        self.title = title
+        self.images = images
+    }
+}
 
+class ModelController: NSObject, UIPageViewControllerDataSource {
+    let apiManager = APIManager()
+    let pageFeature = "popular"
+    var pageCount: Int = 201
     // TODO: make ScreenZoom variable react to pinches so it keeps track of the screen zoom level (1, 2, 3, ...)
     var zoomLevel: Int = 1 {
         didSet {
             zoomLevel = max(kMaxZoomLevel, min(zoomLevel, kMinZoomLevel))
-            self.refreshPageData()
         }
     }
-    
-    var pageData: [String] = []
-    var images: [UIImage]
-    
-    override init() {
-        images = []
         
-        super.init()
-        refreshPageData()
-    }
-
     // Eventually this will update every view to reflect the zoom level? We shall see...
-    func refreshPageData() {
-        pageData = Array(1...100).map({ "Popular Images Page \($0)" })
+    func getImageDataFor(index: Int) -> BehaviorSubject<[Image]> {
+        return apiManager.fetchPageDataFor(feature: pageFeature, page: index + 1, size: 1)
     }
     
     func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
         // Return the data view controller for the given index.
-        if (self.pageData.count == 0) || (index >= self.pageData.count) {
+        if (index >= pageCount) {
             return nil
         }
-
+        
         // Create a new view controller and pass suitable data.
         let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
-        dataViewController.updateViewWith(dataTitle: pageData[index], images: [])
+        dataViewController.updateViewWith(feature: pageFeature, pageNumber: index + 1, imagesSubject: getImageDataFor(index: index))
         
         return dataViewController
     }
@@ -58,14 +60,14 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     func indexOfViewController(_ viewController: DataViewController) -> Int {
         // Return the index of the given data view controller.
         // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
-        return pageData.firstIndex(of: viewController.dataTitle) ?? NSNotFound
+        return viewController.pageNumber - 1
     }
 
     // MARK: - Page View Controller Data Source
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         var index = self.indexOfViewController(viewController as! DataViewController)
-        if (index == 0) || (index == NSNotFound) {
+        if index == 0 {
             return nil
         }
         
@@ -76,13 +78,10 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         var index = self.indexOfViewController(viewController as! DataViewController)
-        if index == NSNotFound {
-            return nil
-        }
         
         index += 1
         
-        if index == self.pageData.count {
+        if index == self.pageCount {
             return nil
         }
         
