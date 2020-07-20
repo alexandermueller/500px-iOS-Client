@@ -9,83 +9,127 @@
 import UIKit
 import RxSwift
 
-/*
- A controller object that manages a simple model -- a collection of month names.
- 
- The controller serves as the data source for the page view controller; it therefore implements pageViewController:viewControllerBeforeViewController: and pageViewController:viewControllerAfterViewController:.
- It also implements a custom method, viewControllerAtIndex: which is useful in the implementation of the data source methods, and in the initial configuration of the application.
- 
- There is no need to actually create view controllers for each page in advance -- indeed doing so incurs unnecessary overhead. Given the data model, these methods create, configure, and return a new view controller on demand.
+/* ModelController:
+ * - Manages a collection of 500px image pages found under one specified page feature.
+ *   Creates, configures, and returns new view controllers on demand, only caching the
+ *   page data retrieved from the 500px API.
+ *
+ *             apiManager: Handles all calls to the 500px API
+ *              pageCount: The page count of the specified feature collection
+ *            pageFeature: The specified page feature
+ *          pageDataCache: A cache of PageData BehaviorSubjects that self-invalidates to ensure up-to-date content
+ * rootPageViewController: A reference to the root UIPageViewController
+ *                    bag: A DisposeBag that performs trash collection after RxSwift interactions lose scope
  */
-
-class PageData {
-    var title: String = ""
-    var images: [Image] = []
-    
-    init(title: String, images: [Image]) {
-        self.title = title
-        self.images = images
-    }
-}
-
 class ModelController: NSObject, UIPageViewControllerDataSource {
-    let apiManager = APIManager()
-    let pageFeature = "popular"
-    var pageCount: Int = 201
-    // TODO: make ScreenZoom variable react to pinches so it keeps track of the screen zoom level (1, 2, 3, ...)
-    var zoomLevel: Int = 1 {
+    private let apiManager = APIManager()
+    private var pageCount: Int = 1 {
         didSet {
-            zoomLevel = max(kMaxZoomLevel, min(zoomLevel, kMinZoomLevel))
+            // Refresh the data source of the UIPageViewController whenever the pageCount changes.
+            // This lets the user go past the initial page bounderies if they are no longer accurate.
+            if let root = self.rootPageViewController {
+                root.dataSource = nil
+                root.dataSource = self
+            }
         }
     }
+    private var pageFeature: String = ""
+    private var pageDataCache = ValidatedPageDataSubjectCache()
+    private var rootPageViewController: UIPageViewController? = nil
+    private let bag = DisposeBag()
+    
+    /* initializeModelFor:feature:with:rootPageViewController:
+     * - Initializes the Model to have a given feature and reference to the root UIPageViewController.
+     *   Triggers a request for the first page's data, updating the page count upon a successful response.
+     */
+    func initializeModelFor(feature: String, with rootPageViewController: UIPageViewController?) {
+        pageFeature = feature
+        self.rootPageViewController = rootPageViewController
+        let pageDataSubject = fetchPageDataFor(index: 0)
         
-    // Eventually this will update every view to reflect the zoom level? We shall see...
-    func getImageDataFor(index: Int) -> BehaviorSubject<[Image]> {
-        return apiManager.fetchPageDataFor(feature: pageFeature, page: index + 1, size: 1)
+        // TODO: This will only update pageCount once. Maybe move this into a better spot for continuous updates
+        pageDataSubject.subscribe(onNext: { [weak self] pageData in
+            DispatchQueue.main.async {
+                self?.pageCount = pageData.totalPages
+            }
+        }).disposed(by: bag)
     }
     
-    func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
-        // Return the data view controller for the given index.
+    /* fetchPageDataFor:index:
+     * - Either:
+     *   • Returns a cached PageData subject if the page already exists in the cache and the data is still valid
+     *   • Returns a re-validated PageData subject awaiting data from an API request if the page already exists
+           in the cache but the data is invalid
+     *   • Or returns a new PageData subject awaiting data from an API request and stores it in the cache
+     */
+    @discardableResult private func fetchPageDataFor(index: Int) -> BehaviorSubject<PageData> {
+        if let pageDataSubject = pageDataCache.fetch(at: index) {
+            return pageDataSubject
+        }
+        
+        let pageDataSubject = apiManager.fetchPageDataFor(feature: pageFeature, page: index + 1, size: 1, invalidPageDataSubject: pageDataCache.fetchEvenIfInvalid(at: index))
+        pageDataCache.validateExistingOrSetNew(pageDataSubject, for: index)
+        
+        return pageDataSubject
+    }
+    
+    /* getFirstViewController:storyboard:
+     * - Called by the RootViewController during intial setup. Retrieves the first PageViewController
+     *   (implicitly triggering a fetch request for that page's data), and triggers a pre-fetch request
+     *   for the second page's data so it's ready once the user transitions to the next page.
+     * - Returns the first PageViewController in the page collection
+     */
+    func getFirstViewController(_ storyboard: UIStoryboard) -> PageViewController? {
+        let viewController = viewControllerAtIndex(0, storyboard: storyboard)
+        fetchPageDataFor(index: 1) // Prefetch the next pageData
+        return viewController
+    }
+    
+    /* viewControllerAtIndex:index:storyboard:
+     * - Returns and initializes the PageViewController at a given page index, triggering a fetch for
+     *   that view's page data.
+     */
+    func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> PageViewController? {
+        // Return nil if the requested page's index is greater than the page count.
         if (index >= pageCount) {
             return nil
         }
         
         // Create a new view controller and pass suitable data.
-        let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
-        dataViewController.updateViewWith(feature: pageFeature, pageNumber: index + 1, imagesSubject: getImageDataFor(index: index))
+        let pageViewController = storyboard.instantiateViewController(withIdentifier: "PageViewController") as! PageViewController
+        pageViewController.updateViewWith(feature: pageFeature, pageNumber: index + 1, pageDataSubject: fetchPageDataFor(index: index))
         
-        return dataViewController
-    }
-
-    func indexOfViewController(_ viewController: DataViewController) -> Int {
-        // Return the index of the given data view controller.
-        // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
-        return viewController.pageNumber - 1
+        return pageViewController
     }
 
     // MARK: - Page View Controller Data Source
 
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        var index = self.indexOfViewController(viewController as! DataViewController)
+    func pageViewController(_ rootPageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        var index = (viewController as! PageViewController).pageNumber - 1
+        
         if index == 0 {
             return nil
+        } else if index - 1 != 0 {
+            fetchPageDataFor(index: index - 1) // Preload cache at the previous page if it's invalid already
         }
         
         index -= 1
         
-        return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
+        return viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        var index = self.indexOfViewController(viewController as! DataViewController)
+    func pageViewController(_ rootPageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        var index = (viewController as! PageViewController).pageNumber - 1
         
         index += 1
         
-        if index == self.pageCount {
+        if index == pageCount {
             return nil
+        } else if index != pageCount - 1 {
+            fetchPageDataFor(index: index + 1) // Preload cache at the next page if it's invalid already
         }
         
-        return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
+        return viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 
 }
