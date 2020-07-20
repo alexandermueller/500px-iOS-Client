@@ -28,14 +28,14 @@ class PageViewController: UIViewController {
     var dataTitle: String = ""
     var bag = DisposeBag()
     
-    /* updateViewWith:feature:pageNumber:pageDataSubject:
-     * - Sets up the view controller with the corresponding feature, page number, and PageData subject.
+    /* updateViewWith:feature:pageNumber:pageCount:pageDataSubject:
+     * - Sets up the view controller with the corresponding feature, page number, page count, and PageData subject.
      *   Subscribes to the PageData subject, which triggers an image view update whenever the PageData is
      *   refreshed.
      */
-    func updateViewWith(feature: String, pageNumber: Int, pageDataSubject: BehaviorSubject<PageData>) {
+    func updateViewWith(feature: String, pageNumber: Int, pageCount: Int, pageDataSubject: BehaviorSubject<PageData>) {
         self.pageNumber = pageNumber
-        self.dataTitle = "\(feature.capitalized) Images Page \(pageNumber)"
+        self.dataTitle = "\(feature.capitalized) Images Page \(pageNumber)/\(pageCount)"
         self.pageDataSubject = pageDataSubject
         
         pageDataSubject.subscribe(onNext: { [weak self] pageData in
