@@ -69,8 +69,8 @@ class ValidatedPageDataSubjectCache {
         return cache[index]?.value()
     }
     
-    /* fetchEvenIfInvalid:at:index
-     * - Similar to fetch:at:index, except returns an existing PageData subject for a given index even
+    /* fetchEvenIfInvalid:at:index:
+     * - Similar to fetch:at:index:, except returns an existing PageData subject for a given index even
      *   if it's invalid.
      */
     func fetchEvenIfInvalid(at index: Int) -> BehaviorSubject<PageData>? {

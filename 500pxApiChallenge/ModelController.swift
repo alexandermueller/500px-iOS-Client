@@ -97,7 +97,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         
         // Create a new view controller and pass suitable data.
         let pageViewController = storyboard.instantiateViewController(withIdentifier: "PageViewController") as! PageViewController
-        pageViewController.updateViewWith(feature: pageFeature, pageNumber: index + 1, pageCount: pageCount, pageDataSubject: fetchPageDataFor(index: index))
+        pageViewController.initializeWith(feature: pageFeature, pageNumber: index + 1, pageCount: pageCount, pageDataSubject: fetchPageDataFor(index: index))
         
         return pageViewController
     }

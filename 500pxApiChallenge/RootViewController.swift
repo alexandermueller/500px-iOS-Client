@@ -9,10 +9,6 @@
 import UIKit
 
 let kDefaultFeature = "popular"
-let kMinZoomLevel = 1
-let kMaxZoomLevel = 3
-let kImageColumns = 4
-let kImageRows = 8
 
 /* RootViewController:
  * - The root view controller, containing the UIPageViewController.
