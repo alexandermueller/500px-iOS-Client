@@ -1,5 +1,5 @@
 //
-//  UIImageView+load.swift
+//  UIImageView+Load.swift
 //  500pxApiChallenge
 //
 //  Created by Alexander Mueller on 2020-07-21.
@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+
+// Taken from this guide (and modified slightly) by Paul Hudson:
+// https://www.hackingwithswift.com/example-code/uikit/how-to-load-a-remote-image-url-into-uiimageview
 
 extension UIImageView {
     func load(url: URL) {
@@ -19,6 +22,7 @@ extension UIImageView {
                     }
                 }
             } else {
+                // TODO: Put placeholder image here or spinning bar
                 DispatchQueue.main.async {
                     self?.backgroundColor = .red
                 }

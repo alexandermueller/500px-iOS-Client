@@ -44,7 +44,17 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     }
     private var lastPinchScale: CGFloat = 0.0
     private var lastPinchVelocity: CGFloat = 0.0
-    private var dataTitle: String = ""
+    private var dataTitle: String = "" {
+        didSet {
+            pageLabel?.text = dataTitle
+        }
+    }
+    private var pageFeature: String = ""
+    private var pageCount: Int = 0 {
+        didSet {
+            dataTitle = "\(pageFeature.capitalized) Images Page \(pageNumber)/\(pageCount)"
+        }
+    }
     private var imageDataArray: [ImageData] = []
     private var imageButtons: [UIButton] = []
     private var pageDataSubject = BehaviorSubject<PageData>(value: .defaultPageData())
@@ -66,7 +76,8 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
      */
     func initializeWith(feature: String, pageNumber: Int, pageCount: Int, pageDataSubject: BehaviorSubject<PageData>) {
         self.pageNumber = pageNumber
-        self.dataTitle = "\(feature.capitalized) Images Page \(pageNumber)/\(pageCount)"
+        self.pageFeature = feature
+        self.pageCount = pageCount
         self.pageDataSubject = pageDataSubject
     }
     
@@ -77,6 +88,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         
         self.pageDataSubject.subscribe(onNext: { [weak self] pageData in
             DispatchQueue.main.async {
+                self?.pageCount = pageData.totalPages
                 self?.updateImageViews(with: pageData.photos)
             }
         }).disposed(by: bag)
@@ -99,18 +111,18 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     /* updateImageViews:with:imageData:
      * - Refreshes the image views on the page to reflect the given ImageData array.
      */
-    func updateImageViews(with imageData: [ImageData]) {
+    func updateImageViews(with imageDataArray: [ImageData]) {
         assert(Thread.isMainThread, "Changes to UI have to be made on main thread!")
         
-        imageDataArray = []
+        self.imageDataArray = []
         imageButtons = []
         
         for subview in scrollView.subviews {
             subview.removeFromSuperview()
         }
                 
-        for image in imageData {
-            guard image.images.count > 0 else {
+        for imageInfo in imageDataArray {
+            guard imageInfo.images.count > 0 else {
                 continue
             }
             
@@ -119,13 +131,28 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             imageButton.imageView?.contentMode = .scaleAspectFill
             imageButton.animatesPressActions(true)
             
-            if let lowestQuality = image.images.first {
-                imageButton.load(linkURL: URL(string: lowestQuality.httpsUrl))
+            var lowestSize: Int = .max
+            var largestSize = 0
+            var lowestSizeURL = ""
+            var largestSizeURL = ""
+            
+            for image in imageInfo.images {
+                if lowestSize > image.size {
+                    lowestSize = image.size
+                    lowestSizeURL = image.httpsUrl
+                }
+                
+                if largestSize < image.size {
+                    largestSize = image.size
+                    largestSizeURL = image.httpsUrl
+                }
             }
+            
+            imageButton.load(lowestSizeURL: URL(string: lowestSizeURL), largestSizeURL: URL(string: largestSizeURL))
             
             scrollView.addSubview(imageButton)
             imageButtons += [imageButton]
-            imageDataArray += [image]
+            self.imageDataArray += [imageInfo]
         }
         
         redrawScrollView()
@@ -149,8 +176,13 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                 }
             }
             
-            imageButton.frame = CGRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
             scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: imageY + imageHeight + kCellMargin)
+            
+            imageButton.layoutIfNeeded()
+            UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: { [imageWidth] in
+                imageButton.frame = CGRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
+                imageButton.layoutIfNeeded()
+            }, completion: nil)
         }
     }
     

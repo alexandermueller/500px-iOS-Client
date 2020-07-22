@@ -9,10 +9,9 @@
 import Foundation
 import UIKit
 
-// Shamelessly borrowed (and modified slightly) from this slick guide by Rory Bain:
+// Taken (and modified slightly) from this slick guide by Rory Bain:
 // https://www.roryba.in/programming/swift/2018/03/24/animating-uibutton.html
 // This allows the toggling of animations to a UIButton on touch events.
-// Thanks, Rory! :)
 
 extension UIButton {
     func animatesPressActions(_ shouldAnimate: Bool) {

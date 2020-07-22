@@ -25,7 +25,7 @@
 		FAB7117124C4F095007ECB9D /* PageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117024C4F095007ECB9D /* PageData.swift */; };
 		FAB7117324C51192007ECB9D /* ValidatedPageDataSubjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117224C51192007ECB9D /* ValidatedPageDataSubjectCache.swift */; };
 		FAB7117924C6BC1A007ECB9D /* UIButton+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */; };
-		FAB7117B24C6BCB6007ECB9D /* UIImageView+load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117A24C6BCB6007ECB9D /* UIImageView+load.swift */; };
+		FAB7117B24C6BCB6007ECB9D /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */; };
 		FAB7117D24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,7 +66,7 @@
 		FAB7117024C4F095007ECB9D /* PageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageData.swift; sourceTree = "<group>"; };
 		FAB7117224C51192007ECB9D /* ValidatedPageDataSubjectCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedPageDataSubjectCache.swift; sourceTree = "<group>"; };
 		FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Load.swift"; sourceTree = "<group>"; };
-		FAB7117A24C6BCB6007ECB9D /* UIImageView+load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+load.swift"; sourceTree = "<group>"; };
+		FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
 		FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+AnimatesPressActions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -137,7 +137,7 @@
 				FAB7116D24C4ECF4007ECB9D /* PageData */,
 				FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */,
 				FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */,
-				FAB7117A24C6BCB6007ECB9D /* UIImageView+load.swift */,
+				FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */,
 				FA6F3BB424C23B7F0049F07A /* AppDelegate.swift */,
 				FA1F0D6024C2A5BA00403453 /* APIManager.swift */,
 				FA6F3BBA24C23B7F0049F07A /* ModelController.swift */,
@@ -371,7 +371,7 @@
 				FA6F3BBB24C23B7F0049F07A /* ModelController.swift in Sources */,
 				FA6F3BB924C23B7F0049F07A /* PageViewController.swift in Sources */,
 				FAA5E0B624C27203003C4DA0 /* ImageData.swift in Sources */,
-				FAB7117B24C6BCB6007ECB9D /* UIImageView+load.swift in Sources */,
+				FAB7117B24C6BCB6007ECB9D /* UIImageView+Load.swift in Sources */,
 				FAB7117D24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift in Sources */,
 				FA1F0D6124C2A5BA00403453 /* APIManager.swift in Sources */,
 				FAB7117324C51192007ECB9D /* ValidatedPageDataSubjectCache.swift in Sources */,
