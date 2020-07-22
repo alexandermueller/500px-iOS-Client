@@ -25,7 +25,6 @@ let kImageColumns = 4
  *             bag: A DisposeBag that performs trash collection after RxSwift interactions lose scope
  */
 class PageViewController: UIViewController, UIScrollViewDelegate {
-    @IBOutlet weak var pageContentView: UIView!
     @IBOutlet weak var pageLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     
@@ -34,14 +33,14 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     private var imageDataDict: [String : ImageData] = [:]
     private var imageButtons: [UIButton] = []
     private var pageDataSubject = BehaviorSubject<PageData>(value: .defaultPageData())
-    private var cellWidth: Int {
-        return Int(pageContentView.frame.width) / kImageColumns
+    private var cellWidth: Double {
+        return Double(scrollView.frame.width) / Double(kImageColumns)
     }
-    private var cellMargin: Int {
+    private var cellMargin: Double {
         return 1
     }
-    private var imageWidth: Int {
-        return cellWidth - cellMargin * 2
+    private var imageWidth: Double {
+        return Double(cellWidth) - cellMargin * 2
     }
     
     private var bag = DisposeBag()
@@ -65,8 +64,6 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                 self?.updateImageViews(with: pageData.photos)
             }
         }).disposed(by: bag)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -74,6 +71,10 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         
         pageLabel.text = dataTitle
         redrawScrollView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+       redrawScrollView()
     }
     
     /* updateImageViews:with:imageData:
@@ -107,7 +108,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             imageButton.addTarget(self, action: #selector(buttonTouchUpInside), for: UIControl.Event.touchUpInside)
             imageButton.addTarget(self, action: #selector(buttonTouchUpOutside), for: UIControl.Event.touchUpOutside)
 
-            scrollView.addSubview(imageButton)            
+            scrollView.addSubview(imageButton)
             imageButtons += [imageButton]
         }
         
@@ -116,11 +117,11 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     
     func redrawScrollView() {
         for (index, imageButton) in imageButtons.enumerated() {
-            let imageY = (index / kImageColumns) * cellWidth + cellMargin
-            let imageX = (index % kImageColumns) * cellWidth + cellMargin
+            let imageY = Double(index / kImageColumns) * cellWidth + cellMargin
+            let imageX = Double(index % kImageColumns) * cellWidth + cellMargin
             
             imageButton.frame = CGRect(x: imageX, y: imageY, width: imageWidth, height: imageWidth)
-            scrollView.contentSize = CGSize(width: Int(pageContentView.frame.width), height: imageY + imageWidth + cellMargin)
+            scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: imageY + imageWidth + cellMargin)
         }
     }
     
@@ -144,14 +145,6 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             imageButton.isHighlighted = false
             imageButton.backgroundColor = .black
         }
-    }
-    
-    @objc func rotated() {
-        redrawScrollView()
-    }
-    
-    deinit {
-       NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 }
 
