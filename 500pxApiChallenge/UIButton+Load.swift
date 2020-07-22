@@ -24,7 +24,7 @@ extension UIButton {
             urls += [(largestURL, false)]
         }
         
-        DispatchQueue.global().async { [weak self, urls] in
+        DispatchQueue.global().async { [weak self] in
             do {
                 for (url, isLowestSize) in urls {
                     let data = try Data(contentsOf: url)

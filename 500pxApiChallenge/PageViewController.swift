@@ -52,7 +52,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     private var pageFeature: String = ""
     private var pageCount: Int = 0 {
         didSet {
-            dataTitle = "\(pageFeature.capitalized) Images Page \(pageNumber)/\(pageCount)"
+            dataTitle = "\(pageFeature.capitalized) Images - Page \(pageNumber)/\(pageCount)"
         }
     }
     private var imageDataArray: [ImageData] = []
