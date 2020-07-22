@@ -1,5 +1,5 @@
 //
-//  UIButton+load.swift
+//  UIButton+Load.swift
 //  500pxApiChallenge
 //
 //  Created by Alexander Mueller on 2020-07-21.
@@ -20,8 +20,7 @@ extension UIButton {
                 let data = try Data(contentsOf: url)
                 if let image = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        self?.setBackgroundImage(image, for: .normal)
-                        self?.imageView?.contentMode = .scaleAspectFill
+                        self?.setImage(image, for: .normal)
                     }
                 }
             } catch {

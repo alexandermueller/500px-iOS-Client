@@ -33,6 +33,7 @@
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="cF2-Le-7mQ">
                                 <rect key="frame" x="20" y="4" width="335" height="17"/>
+                                <gestureRecognizers/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -40,11 +41,16 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" directionalLockEnabled="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" indicatorStyle="white" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R9v-qG-YIb">
                                 <rect key="frame" x="20" y="25" width="335" height="628"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <gestureRecognizers/>
                                 <viewLayoutGuide key="contentLayoutGuide" id="hyh-dz-4F3"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="Uh7-ie-Y0e"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="wQI-2t-llc" appends="YES" id="LOz-4A-msn"/>
+                                </connections>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" red="0.97826086960000003" green="0.91848131079999995" blue="0.73914263440000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="cF2-Le-7mQ" firstAttribute="top" secondItem="K9I-jD-KjA" secondAttribute="top" constant="4" id="5r2-No-gif"/>
                             <constraint firstItem="R9v-qG-YIb" firstAttribute="top" secondItem="cF2-Le-7mQ" secondAttribute="bottom" constant="4" id="JyU-Bl-OGC"/>
@@ -63,6 +69,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GmD-Rr-ZGN" sceneMemberID="firstResponder"/>
+                <pinchGestureRecognizer id="wQI-2t-llc">
+                    <connections>
+                        <action selector="didPinch:" destination="S4R-Ja-viH" id="zT1-sd-dS7"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="592.79999999999995" y="-244.22788605697153"/>
         </scene>
