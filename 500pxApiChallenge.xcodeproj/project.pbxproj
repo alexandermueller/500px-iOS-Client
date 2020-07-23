@@ -27,6 +27,7 @@
 		FAB7117924C6BC1A007ECB9D /* UIButton+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */; };
 		FAB7117B24C6BCB6007ECB9D /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */; };
 		FAB7117D24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */; };
+		FAB7117F24C960AC007ECB9D /* UIScrollView+ScrollToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Load.swift"; sourceTree = "<group>"; };
 		FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
 		FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+AnimatesPressActions.swift"; sourceTree = "<group>"; };
+		FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollToView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */,
 				FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */,
 				FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */,
+				FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */,
 				FA6F3BB424C23B7F0049F07A /* AppDelegate.swift */,
 				FA1F0D6024C2A5BA00403453 /* APIManager.swift */,
 				FA6F3BBA24C23B7F0049F07A /* ModelController.swift */,
@@ -367,6 +370,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAB7117F24C960AC007ECB9D /* UIScrollView+ScrollToView.swift in Sources */,
 				FA6F3BB724C23B7F0049F07A /* RootViewController.swift in Sources */,
 				FA6F3BBB24C23B7F0049F07A /* ModelController.swift in Sources */,
 				FA6F3BB924C23B7F0049F07A /* PageViewController.swift in Sources */,
