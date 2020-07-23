@@ -131,18 +131,18 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             imageButton.imageView?.contentMode = .scaleAspectFill
             imageButton.animatesPressActions(true)
             
-            var lowestSize: Int = .max
-            var largestSize = 0
+            var lowestSize: Int = 0
+            var largestSize: Int = .max
             var lowestSizeURL = ""
             var largestSizeURL = ""
             
             for image in imageInfo.images {
-                if lowestSize > image.size {
+                if lowestSize < image.size {
                     lowestSize = image.size
                     lowestSizeURL = image.httpsUrl
                 }
                 
-                if largestSize < image.size {
+                if largestSize > image.size {
                     largestSize = image.size
                     largestSizeURL = image.httpsUrl
                 }

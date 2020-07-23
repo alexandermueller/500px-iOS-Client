@@ -42,10 +42,10 @@ class APIManager {
      *   put any parsed PageData into the invalidPageDataSubject, otherwise the page hasn't been visited before, so it returns
      *   a fresh PageData BehaviorSubject.
      */
-    @discardableResult func fetchPageDataFor(feature: String, page: Int, size: Int, invalidPageDataSubject: BehaviorSubject<PageData>?) -> BehaviorSubject<PageData> {
+    @discardableResult func fetchPageDataFor(feature: String, page: Int, invalidPageDataSubject: BehaviorSubject<PageData>?) -> BehaviorSubject<PageData> {
         let pageDataSubject = invalidPageDataSubject ?? BehaviorSubject<PageData>(value: .defaultPageData())
         
-        guard let key = consumerKey, let url = URL(string: "https://api.500px.com/v1/photos?feature=\(feature)&page=\(page)&image_size=\(size)&consumer_key=\(key)") else {
+        guard let key = consumerKey, let url = URL(string: "https://api.500px.com/v1/photos?feature=\(feature)&page=\(page)&consumer_key=\(key)") else {
             if consumerKey != nil {
                 print("FetchImages error: \(consumerKey == nil ? "key should not be nil" : "api url should not be nil")")
             }

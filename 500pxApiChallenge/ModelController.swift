@@ -67,7 +67,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
             return pageDataSubject
         }
         
-        let pageDataSubject = apiManager.fetchPageDataFor(feature: pageFeature, page: index + 1, size: 1, invalidPageDataSubject: pageDataCache.fetchEvenIfInvalid(at: index))
+        let pageDataSubject = apiManager.fetchPageDataFor(feature: pageFeature, page: index + 1, invalidPageDataSubject: pageDataCache.fetchEvenIfInvalid(at: index))
         pageDataCache.validateExistingOrSetNew(pageDataSubject, for: index)
         
         return pageDataSubject
