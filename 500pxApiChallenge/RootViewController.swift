@@ -36,7 +36,7 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         view.addSubview(rootPageViewController!.view)
 
         // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
-        var pageViewRect = view.bounds
+        let pageViewRect = view.bounds
         
 //        if UIDevice.current.userInterfaceIdiom == .pad {
 //            pageViewRect = pageViewRect.insetBy(dx: 0.0, dy: 0.0)

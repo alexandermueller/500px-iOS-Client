@@ -31,7 +31,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="cF2-Le-7mQ" userLabel="Gallery Page Label">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="cF2-Le-7mQ" userLabel="Page Label">
                                 <rect key="frame" x="20" y="4" width="335" height="22"/>
                                 <gestureRecognizers/>
                                 <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="17"/>
@@ -48,24 +48,14 @@
                                     <outletCollection property="gestureRecognizers" destination="wQI-2t-llc" appends="YES" id="LOz-4A-msn"/>
                                 </connections>
                             </scrollView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="XBs-64-yr2" userLabel="Single Page Label">
-                                <rect key="frame" x="20" y="4" width="335" height="22"/>
-                                <gestureRecognizers/>
-                                <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="cF2-Le-7mQ" firstAttribute="top" secondItem="K9I-jD-KjA" secondAttribute="top" constant="4" id="5r2-No-gif"/>
-                            <constraint firstItem="XBs-64-yr2" firstAttribute="trailing" secondItem="cF2-Le-7mQ" secondAttribute="trailing" id="7hs-MK-V0E"/>
-                            <constraint firstItem="XBs-64-yr2" firstAttribute="leading" secondItem="cF2-Le-7mQ" secondAttribute="leading" id="9Kd-79-fdH"/>
                             <constraint firstItem="R9v-qG-YIb" firstAttribute="trailing" secondItem="K9I-jD-KjA" secondAttribute="trailing" id="BGE-h9-z5s"/>
                             <constraint firstItem="R9v-qG-YIb" firstAttribute="top" secondItem="cF2-Le-7mQ" secondAttribute="bottom" constant="4" id="JyU-Bl-OGC"/>
                             <constraint firstItem="R9v-qG-YIb" firstAttribute="leading" secondItem="K9I-jD-KjA" secondAttribute="leading" id="VUe-lg-k30"/>
-                            <constraint firstItem="XBs-64-yr2" firstAttribute="top" secondItem="K9I-jD-KjA" secondAttribute="top" constant="4" id="hiJ-dV-SAL"/>
                             <constraint firstItem="R9v-qG-YIb" firstAttribute="bottom" secondItem="K9I-jD-KjA" secondAttribute="bottom" id="mSc-LE-94S"/>
                             <constraint firstItem="K9I-jD-KjA" firstAttribute="trailing" secondItem="cF2-Le-7mQ" secondAttribute="trailing" constant="20" id="rKT-Ka-30V"/>
                             <constraint firstItem="cF2-Le-7mQ" firstAttribute="leading" secondItem="K9I-jD-KjA" secondAttribute="leading" constant="20" id="wy0-Qd-Qt6"/>
@@ -73,9 +63,8 @@
                         <viewLayoutGuide key="safeArea" id="K9I-jD-KjA"/>
                     </view>
                     <connections>
-                        <outlet property="galleryPageLabel" destination="cF2-Le-7mQ" id="c2e-0v-clq"/>
+                        <outlet property="pageLabel" destination="cF2-Le-7mQ" id="iqE-qL-Euk"/>
                         <outlet property="scrollView" destination="R9v-qG-YIb" id="LGY-aK-rhL"/>
-                        <outlet property="singlePageLabel" destination="XBs-64-yr2" id="4t6-RZ-h2C"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GmD-Rr-ZGN" sceneMemberID="firstResponder"/>

@@ -27,34 +27,21 @@ let kCellMargin = 1.0
  *             bag: A DisposeBag that performs trash collection after RxSwift interactions lose scope
  */
 class PageViewController: UIViewController, UIScrollViewDelegate {
-    enum PageViewState {
-        case gallery
-        case single
-    }
-    
-    private var currentState: PageViewState = .gallery
-    
 // MARK: - UI Variables
     
-    @IBOutlet weak var galleryPageLabel: UILabel!
-    @IBOutlet weak var singlePageLabel: UILabel!
+    @IBOutlet weak var pageLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     
     var pageNumber: Int = 1
-    private var galleryPageTitle: String = "" {
+    private var pageTitle: String = "" {
         didSet {
-            galleryPageLabel?.text = galleryPageTitle
-        }
-    }
-    private var singlePageTitle: String = "" {
-        didSet {
-            singlePageLabel?.text = singlePageTitle
+            pageLabel?.text = pageTitle
         }
     }
     private var pageFeature: String = ""
     private var pageCount: Int = 0 {
         didSet {
-            galleryPageTitle = "\(pageFeature.capitalized) Images - Page \(pageNumber)/\(pageCount)"
+            pageTitle = "\(pageFeature.capitalized) Images - Page \(pageNumber)/\(pageCount)"
         }
     }
     private var columns: Int {
@@ -74,7 +61,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             currentImageScale = max(kMinImageScaleValue, min(currentImageScale, kMaxImageScaleValue))
             
             if oldValue != currentImageScale {
-                redrawScrollView() // TODO: This will trigger state changes
+                redrawScrollView()
             }
         }
     }
@@ -83,10 +70,9 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     
 // MARK: - Image Variables
     
-    private var imageDataArray: [ImageData] = []
     private var imageButtons: [UIButton] = []
+    private var imageInfoViews: [ImageInfoView] = []
     private var pageDataSubject = BehaviorSubject<PageData>(value: .defaultPageData())
-    private var imageInformationView = UIView()
     private var bag = DisposeBag()
     
 // MARK: - Setup And ViewController Methods
@@ -110,19 +96,18 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         self.pageDataSubject.subscribe(onNext: { [weak self] pageData in
             DispatchQueue.main.async {
                 self?.pageCount = pageData.totalPages
-                self?.updateImageViews(with: pageData.photos) // TODO: This is very problematic for the state machine
+                self?.updateImageViews(with: pageData.photos)
             }
         }).disposed(by: bag)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        goToGallery()
+        currentImageScale = kMaxImageScaleValue
     }
     
     override func viewDidLayoutSubviews() {
-       redrawScrollView() // TODO: After the redraw, this should scroll to the view that was closest to the top before.
+       redrawScrollView()
     }
     
 // MARK: - Image Drawing Methods
@@ -133,8 +118,8 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     func updateImageViews(with imageDataArray: [ImageData]) {
         assert(Thread.isMainThread, "Changes to UI have to be made on main thread!")
         
-        self.imageDataArray = []
         imageButtons = []
+        imageInfoViews = []
         
         for subview in scrollView.subviews {
             subview.removeFromSuperview()
@@ -170,9 +155,19 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             
             imageButton.load(lowestSizeURL: URL(string: lowestSizeURL), largestSizeURL: URL(string: largestSizeURL))
             
+            let imageInfoView = ImageInfoView.loadViewFromNib()
+            imageInfoView.titleLabel.text = imageInfo.name
+            imageInfoView.usernameLabel.text = "\(imageInfo.user.username) (\(imageInfo.user.fullname))"
+            imageInfoView.viewsLabel.text = imageInfo.timesViewed.toShortString()
+            imageInfoView.positiveRanksLabel.text = imageInfo.positiveVotesCount.toShortString()
+            imageInfoView.commentsLabel.text = imageInfo.commentsCount.toShortString()
+            imageInfoView.descriptionTextView.text = imageInfo.description.isEmpty ? "No Description" : imageInfo.description
+            imageInfoView.isHidden = true
+            
             scrollView.addSubview(imageButton)
+            
             imageButtons += [imageButton]
-            self.imageDataArray += [imageInfo]
+            imageInfoViews += [imageInfoView]
         }
         
         redrawScrollView()
@@ -180,29 +175,50 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     
     func redrawScrollView() {
         for (index, imageButton) in imageButtons.enumerated() {
-            var imageY = Double(index / columns) * cellWidth + kCellMargin
             let imageX = Double(index % columns) * cellWidth + kCellMargin
+            var imageY = Double(index / columns) * cellWidth + kCellMargin
             var imageHeight = imageWidth
-
+            
             // Draw image to the appropriate height according to the aspect ratio when colums == 1
             if columns == 1 {
                 if index > 0 {
-                    let lastImageButton = imageButtons[index - 1]
-                    imageY = Double(lastImageButton.frame.origin.y + lastImageButton.frame.size.height) + kCellMargin * 2
+                    let lastImageInfoView = imageInfoViews[index - 1]
+                    imageY = Double(lastImageInfoView.frame.origin.y + lastImageInfoView.frame.size.height) + kCellMargin * 2
                 }
                 
-                if let size = imageButton.imageView?.image?.size {
-                    imageHeight = Double(size.height / size.width) * imageWidth
+                for state in [UIControl.State.reserved, UIControl.State.normal] {
+                    if let size = imageButton.image(for: state)?.size {
+                        imageHeight = Double(size.height / size.width) * imageWidth
+                        break
+                    }
                 }
             }
             
-            scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: imageY + imageHeight + kCellMargin)
+            let imageInfoView = imageInfoViews[index]
+            let infoY = imageY + imageHeight
+            let infoHeight: Double = Double(imageInfoView.frame.height)
+            let infoWidth: Double = columns == 1 ? imageWidth : Double(scrollView.frame.width)
+            imageInfoView.isHidden = currentImageScale != kMinImageScaleValue
+            
+            let contentHeight = infoY + infoHeight * (imageInfoView.isHidden ? 0 : 1) + kCellMargin
+            scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: contentHeight)
             
             imageButton.layoutIfNeeded()
             UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: { [imageWidth] in
                 imageButton.frame = CGRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
                 imageButton.layoutIfNeeded()
             }, completion: nil)
+            
+            if !imageInfoView.isHidden {
+                scrollView.addSubviewIfNecessary(imageInfoView)
+                imageInfoView.layoutIfNeeded()
+                UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: { [infoWidth] in
+                    imageInfoView.frame = CGRect(x: imageX, y: infoY, width: infoWidth, height: infoHeight)
+                    imageInfoView.layoutIfNeeded()
+                }, completion: nil)
+            } else {
+                imageInfoView.removeFromSuperview()
+            }
         }
     }
 
@@ -217,7 +233,8 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
 // MARK: - UIButton Touch
     
     @objc func buttonTouchUpInside(sender: UIButton!) {
-        goToSingle(with: sender)
+        currentImageScale = kMinImageScaleValue
+        scrollView.scrollToView(view: sender, animated: true)
     }
     
 // MARK: - UIPinchGestureRecognizer
@@ -249,36 +266,5 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         default:
             break
         }
-    }
-    
-// MARK: - ViewController State Machine
-    // TODO: Make StateTransitionTriggerSubject, so when certain events happen, ie button presses or pinching,
-    //       they will get passed into that subject, which will trigger a state change when done correctly
-    
-    func goToGallery(imageScale: Int = kMaxImageScaleValue) {
-        assert(Thread.isMainThread)
-        
-        currentState = .gallery
-        singlePageLabel.isHidden = true
-        galleryPageLabel.isHidden = false
-        currentImageScale = imageScale
-        
-        redrawScrollView()
-    }
-    
-    
-    // TODO: This should disable side swipes on the super view...
-    //       Only up swipes can change the state??
-    func goToSingle(with view: UIView) {
-        assert(Thread.isMainThread)
-        
-        currentState = .single
-        singlePageLabel.isHidden = true
-        galleryPageLabel.isHidden = false
-        galleryPageTitle = "IMAGE NAME!!!"
-        currentImageScale = kMinImageScaleValue
-        
-        scrollView.scrollToView(view: view, animated: true)
-        //redrawScrollView()
     }
 }
