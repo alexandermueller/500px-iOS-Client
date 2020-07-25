@@ -31,7 +31,7 @@ class APIManager {
     }
     
     /* fetchPageDataFor:feature:page:size:invalidPageDataSubject:
-     * - Performs a data request to the 500px API using the given feature page, page number, image size, and consumer key.
+     * - Performs a data request to the 500px API using the given feature page, page number, and consumer key.
      *   If the request is successful, the function will attempt to decode the JSON data into a PageData struct. The PageData
      *   struct is a nested struct of JSON coders that emulate a simplified view of the JSON returned.
      *
@@ -41,6 +41,10 @@ class APIManager {
      * - Returns a PageData BehaviorSubject. If the page has been visited before but the PageData is invalid, then it will
      *   put any parsed PageData into the invalidPageDataSubject, otherwise the page hasn't been visited before, so it returns
      *   a fresh PageData BehaviorSubject.
+     *
+     * - In the interest of time, I decided to leave this where it is now, but if I had more time to flesh it out, I would love
+     *   this to onError (or something similar) when something goes wrong to signal downstream listeners that there was an issue.
+     *   This way, the user can attempt another fetch in case the server is unavailable.
      */
     @discardableResult func fetchPageDataFor(feature: String, page: Int, invalidPageDataSubject: BehaviorSubject<PageData>?) -> BehaviorSubject<PageData> {
         let pageDataSubject = invalidPageDataSubject ?? BehaviorSubject<PageData>(value: .defaultPageData())

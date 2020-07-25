@@ -13,10 +13,14 @@ import UIKit
 // https://stackoverflow.com/questions/39018017/programmatically-scroll-a-uiscrollview-to-the-top-of-a-child-uiview-subview-in
 
 extension UIScrollView {
-    func scrollToView(view: UIView, animated: Bool) {
-        if let origin = view.superview {
+    func scrollToView(_ view: UIView?, animated: Bool) {
+        guard let targetView = view else {
+            return
+        }
+        
+        if let origin = targetView.superview {
             // Get the Y position of your child view
-            let childStartPoint = origin.convert(view.frame.origin, to: self)
+            let childStartPoint = origin.convert(targetView.frame.origin, to: self)
             // Scroll to a rectangle starting at the Y of your subview, with a height of the scrollview
             self.scrollRectToVisible(CGRect(x: 0, y: childStartPoint.y, width: 1, height: self.frame.height), animated: animated)
         }

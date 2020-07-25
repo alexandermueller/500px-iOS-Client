@@ -20,8 +20,8 @@
 		FA6F3BCE24C23B7F0049F07A /* _00pxApiChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6F3BCD24C23B7F0049F07A /* _00pxApiChallengeTests.swift */; };
 		FA765DEC24CA997900997CB1 /* ImageInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA765DEB24CA997900997CB1 /* ImageInfoView.xib */; };
 		FA765DEE24CA9AD100997CB1 /* ImageInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA765DED24CA9AD100997CB1 /* ImageInfoView.swift */; };
-		FA765DF024CAA22000997CB1 /* Int+ToShortString.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA765DEF24CAA22000997CB1 /* Int+ToShortString.swift */; };
 		FA765DF424CABD5C00997CB1 /* UIView+AddSubviewIfNecessary.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA765DF324CABD5C00997CB1 /* UIView+AddSubviewIfNecessary.swift */; };
+		FA765DF724CBC6DC00997CB1 /* Int+ShortForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA765DEF24CAA22000997CB1 /* Int+ShortForm.swift */; };
 		FAA5E0B424C25332003C4DA0 /* API.key in Resources */ = {isa = PBXBuildFile; fileRef = FAA5E0B324C25332003C4DA0 /* API.key */; };
 		FAA5E0B624C27203003C4DA0 /* ImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA5E0B524C27203003C4DA0 /* ImageData.swift */; };
 		FAB7116C24C4ECEB007ECB9D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7116B24C4ECEB007ECB9D /* User.swift */; };
@@ -29,7 +29,6 @@
 		FAB7117124C4F095007ECB9D /* PageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117024C4F095007ECB9D /* PageData.swift */; };
 		FAB7117324C51192007ECB9D /* ValidatedPageDataSubjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117224C51192007ECB9D /* ValidatedPageDataSubjectCache.swift */; };
 		FAB7117924C6BC1A007ECB9D /* UIButton+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */; };
-		FAB7117B24C6BCB6007ECB9D /* UIImageView+Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */; };
 		FAB7117D24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */; };
 		FAB7117F24C960AC007ECB9D /* UIScrollView+ScrollToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */; };
 /* End PBXBuildFile section */
@@ -65,7 +64,7 @@
 		FA6F3BCF24C23B7F0049F07A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA765DEB24CA997900997CB1 /* ImageInfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageInfoView.xib; sourceTree = "<group>"; };
 		FA765DED24CA9AD100997CB1 /* ImageInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInfoView.swift; sourceTree = "<group>"; };
-		FA765DEF24CAA22000997CB1 /* Int+ToShortString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ToShortString.swift"; sourceTree = "<group>"; };
+		FA765DEF24CAA22000997CB1 /* Int+ShortForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+ShortForm.swift"; sourceTree = "<group>"; };
 		FA765DF324CABD5C00997CB1 /* UIView+AddSubviewIfNecessary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddSubviewIfNecessary.swift"; sourceTree = "<group>"; };
 		FA9DC709258D149C2D42FDF8 /* Pods-500pxApiChallengeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-500pxApiChallengeTests.debug.xcconfig"; path = "Target Support Files/Pods-500pxApiChallengeTests/Pods-500pxApiChallengeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FAA5E0B324C25332003C4DA0 /* API.key */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = API.key; sourceTree = "<group>"; };
@@ -75,7 +74,6 @@
 		FAB7117024C4F095007ECB9D /* PageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageData.swift; sourceTree = "<group>"; };
 		FAB7117224C51192007ECB9D /* ValidatedPageDataSubjectCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedPageDataSubjectCache.swift; sourceTree = "<group>"; };
 		FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Load.swift"; sourceTree = "<group>"; };
-		FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Load.swift"; sourceTree = "<group>"; };
 		FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+AnimatesPressActions.swift"; sourceTree = "<group>"; };
 		FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+ScrollToView.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,9 +174,8 @@
 				FAB7117824C6BC1A007ECB9D /* UIButton+Load.swift */,
 				FA765DF324CABD5C00997CB1 /* UIView+AddSubviewIfNecessary.swift */,
 				FAB7117C24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift */,
-				FAB7117A24C6BCB6007ECB9D /* UIImageView+Load.swift */,
 				FAB7117E24C960AC007ECB9D /* UIScrollView+ScrollToView.swift */,
-				FA765DEF24CAA22000997CB1 /* Int+ToShortString.swift */,
+				FA765DEF24CAA22000997CB1 /* Int+ShortForm.swift */,
 			);
 			path = "Class Extensions";
 			sourceTree = "<group>";
@@ -399,14 +396,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA765DF724CBC6DC00997CB1 /* Int+ShortForm.swift in Sources */,
 				FAB7117F24C960AC007ECB9D /* UIScrollView+ScrollToView.swift in Sources */,
 				FA6F3BB724C23B7F0049F07A /* RootViewController.swift in Sources */,
 				FA6F3BBB24C23B7F0049F07A /* ModelController.swift in Sources */,
 				FA6F3BB924C23B7F0049F07A /* PageViewController.swift in Sources */,
 				FAA5E0B624C27203003C4DA0 /* ImageData.swift in Sources */,
-				FA765DF024CAA22000997CB1 /* Int+ToShortString.swift in Sources */,
 				FA765DEE24CA9AD100997CB1 /* ImageInfoView.swift in Sources */,
-				FAB7117B24C6BCB6007ECB9D /* UIImageView+Load.swift in Sources */,
 				FAB7117D24C8300C007ECB9D /* UIButton+AnimatesPressActions.swift in Sources */,
 				FA1F0D6124C2A5BA00403453 /* APIManager.swift in Sources */,
 				FAB7117324C51192007ECB9D /* ValidatedPageDataSubjectCache.swift in Sources */,

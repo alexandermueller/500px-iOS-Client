@@ -53,6 +53,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     private var imageWidth: Double {
         return Double(cellWidth) - kCellMargin * 2
     }
+    private var lastScrollViewFrame: CGRect? = nil
     
 // MARK: - Scale Variables
     
@@ -70,6 +71,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     
 // MARK: - Image Variables
     
+    private var firstVisibleButton: UIView? = nil
     private var imageButtons: [UIButton] = []
     private var imageInfoViews: [ImageInfoView] = []
     private var pageDataSubject = BehaviorSubject<PageData>(value: .defaultPageData())
@@ -92,6 +94,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         
         scrollView.delegate = self
+        lastScrollViewFrame = scrollView.frame
         
         self.pageDataSubject.subscribe(onNext: { [weak self] pageData in
             DispatchQueue.main.async {
@@ -107,7 +110,12 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewDidLayoutSubviews() {
-       redrawScrollView()
+        if let frame = lastScrollViewFrame, frame != scrollView.frame {
+            redrawScrollView()
+            lastScrollViewFrame = scrollView.frame
+            
+            scrollView.scrollToView(firstVisibleButton, animated: false)
+        }
     }
     
 // MARK: - Image Drawing Methods
@@ -115,7 +123,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     /* updateImageViews:with:imageData:
      * - Refreshes the image views on the page to reflect the given ImageData array.
      */
-    func updateImageViews(with imageDataArray: [ImageData]) {
+    private func updateImageViews(with imageDataArray: [ImageData]) {
         assert(Thread.isMainThread, "Changes to UI have to be made on main thread!")
         
         imageButtons = []
@@ -153,14 +161,15 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                 }
             }
             
-            imageButton.load(lowestSizeURL: URL(string: lowestSizeURL), largestSizeURL: URL(string: largestSizeURL))
+            // TODO: Implement solution to add large image to button
+            imageButton.load(imageURL: URL(string: lowestSizeURL))
             
             let imageInfoView = ImageInfoView.loadViewFromNib()
             imageInfoView.titleLabel.text = imageInfo.name
             imageInfoView.usernameLabel.text = "\(imageInfo.user.username) (\(imageInfo.user.fullname))"
-            imageInfoView.viewsLabel.text = imageInfo.timesViewed.toShortString()
-            imageInfoView.positiveRanksLabel.text = imageInfo.positiveVotesCount.toShortString()
-            imageInfoView.commentsLabel.text = imageInfo.commentsCount.toShortString()
+            imageInfoView.viewsLabel.text = imageInfo.timesViewed.shortForm()
+            imageInfoView.positiveRanksLabel.text = imageInfo.positiveVotesCount.shortForm()
+            imageInfoView.commentsLabel.text = imageInfo.commentsCount.shortForm()
             imageInfoView.descriptionTextView.text = imageInfo.description.isEmpty ? "No Description" : imageInfo.description
             imageInfoView.isHidden = true
             
@@ -170,10 +179,10 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             imageInfoViews += [imageInfoView]
         }
         
-        redrawScrollView()
+        redrawScrollView(animated: true)
     }
     
-    func redrawScrollView() {
+    private func redrawScrollView(animated: Bool = false) {
         for (index, imageButton) in imageButtons.enumerated() {
             let imageX = Double(index % columns) * cellWidth + kCellMargin
             var imageY = Double(index / columns) * cellWidth + kCellMargin
@@ -186,11 +195,8 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                     imageY = Double(lastImageInfoView.frame.origin.y + lastImageInfoView.frame.size.height) + kCellMargin * 2
                 }
                 
-                for state in [UIControl.State.reserved, UIControl.State.normal] {
-                    if let size = imageButton.image(for: state)?.size {
-                        imageHeight = Double(size.height / size.width) * imageWidth
-                        break
-                    }
+                if let size = imageButton.image(for: .normal)?.size {
+                    imageHeight = min(Double(size.height / size.width) * imageWidth, Double(size.height))
                 }
             }
             
@@ -204,42 +210,66 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: contentHeight)
             
             imageButton.layoutIfNeeded()
-            UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: { [imageWidth] in
-                imageButton.frame = CGRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
-                imageButton.layoutIfNeeded()
-            }, completion: nil)
+            imageInfoView.layoutIfNeeded()
+            
+            var drawingViews: [(UIView, CGRect)] = [(imageButton, CGRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight))]
             
             if !imageInfoView.isHidden {
                 scrollView.addSubviewIfNecessary(imageInfoView)
-                imageInfoView.layoutIfNeeded()
-                UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: { [infoWidth] in
-                    imageInfoView.frame = CGRect(x: imageX, y: infoY, width: infoWidth, height: infoHeight)
-                    imageInfoView.layoutIfNeeded()
-                }, completion: nil)
+                drawingViews += [(imageInfoView, CGRect(x: imageX, y: infoY, width: infoWidth, height: infoHeight))]
             } else {
                 imageInfoView.removeFromSuperview()
             }
+            
+            for (drawingView, drawingRect) in drawingViews {
+                let drawingBlock = {
+                    drawingView.frame = drawingRect
+                    drawingView.layoutIfNeeded()
+                }
+                
+                if animated {
+                    UIView.animate(withDuration: 0.25, delay: 0.0, options: .curveLinear, animations: drawingBlock, completion: nil)
+                    continue
+                }
+                
+                drawingBlock()
+            }
         }
     }
-
+    
 // MARK: - UIScrollView Delegate
     
-    // TODO: implement rotating wheel for when user scrolls down far enough or when the view is empty.
+    private func findAndSetFirstVisibleButton() {
+        for button in imageButtons {
+            if scrollView.bounds.intersects(button.frame) {
+                firstVisibleButton = button
+                return
+            }
+        }
+    }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            findAndSetFirstVisibleButton()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        findAndSetFirstVisibleButton()
     }
     
 // MARK: - UIButton Touch
     
-    @objc func buttonTouchUpInside(sender: UIButton!) {
+    @objc private func buttonTouchUpInside(sender: UIButton!) {
+        let oldImageScale = currentImageScale
         currentImageScale = kMinImageScaleValue
-        scrollView.scrollToView(view: sender, animated: true)
+        scrollView.scrollToView(sender, animated: oldImageScale == kMinImageScaleValue)
+        firstVisibleButton = sender
     }
     
 // MARK: - UIPinchGestureRecognizer
     
-    @IBAction func didPinch(_ sender: UIPinchGestureRecognizer) {
+    @IBAction private func didPinch(_ sender: UIPinchGestureRecognizer) {
         let pinchVelocity: CGFloat = sender.velocity
         let pinchScale: CGFloat = sender.scale
         
@@ -255,7 +285,8 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                     
             // Change image scale if the difference goes past the image scale threshold value
             if abs(lastPinchScale - pinchScale) * 10 > CGFloat(kImageScaleThresholdValue) {
-                currentImageScale += pinchVelocity < 0 ? 1 : -1
+                currentImageScale = currentImageScale + (pinchVelocity < 0 ? 1 : -1)
+                scrollView.scrollToView(firstVisibleButton, animated: false)
                 lastPinchScale = pinchScale
             }
             
