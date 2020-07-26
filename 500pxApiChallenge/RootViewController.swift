@@ -11,7 +11,7 @@ import UIKit
 let kDefaultFeature = "popular"
 
 /* RootViewController:
- * - The root view controller, containing the UIPageViewController.
+ * - The root view controller, containing the root UIPageViewController.
  *   Automatically generated via Apple's application templates, modified
  *   slightly to improve readablility and conform to the modified project
  *   nomenclature.
@@ -32,17 +32,11 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
         
         rootPageViewController!.setViewControllers(viewControllers, direction: .forward, animated: false, completion: {done in })
         rootPageViewController!.dataSource = modelController
+        
         addChild(rootPageViewController!)
         view.addSubview(rootPageViewController!.view)
-
-        // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
-        let pageViewRect = view.bounds
         
-//        if UIDevice.current.userInterfaceIdiom == .pad {
-//            pageViewRect = pageViewRect.insetBy(dx: 0.0, dy: 0.0)
-//        }
-        
-        rootPageViewController!.view.frame = pageViewRect
+        rootPageViewController!.view.frame = view.bounds
         rootPageViewController!.didMove(toParent: self)
     }
 
@@ -59,36 +53,5 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
     }
 
     var _modelController: ModelController? = nil
-
-    // MARK: - UIPageViewController delegate methods
-
-    func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewController.SpineLocation {
-        if (orientation == .portrait) || (orientation == .portraitUpsideDown) || (UIDevice.current.userInterfaceIdiom == .phone) {
-            // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewController.SpineLocation.mid' in landscape orientation sets the doubleSided property to true, so set it to false here.
-            let currentViewController = rootPageViewController!.viewControllers![0]
-            let viewControllers = [currentViewController]
-            
-            rootPageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
-            rootPageViewController!.isDoubleSided = false
-            return .min
-        }
-
-        // In landscape orientation: Set set the spine location to "mid" and the page view controller's view controllers array to contain two view controllers. If the current page is even, set it to contain the current and next view controllers; if it is odd, set the array to contain the previous and current view controllers.
-        let currentViewController = rootPageViewController!.viewControllers![0] as! PageViewController
-        var viewControllers: [UIViewController]
-        let indexOfCurrentViewController = currentViewController.pageNumber - 1
-        
-        if (indexOfCurrentViewController == 0) || (indexOfCurrentViewController % 2 == 0) {
-            let nextViewController = modelController.pageViewController(rootPageViewController!, viewControllerAfter: currentViewController)
-            viewControllers = [currentViewController, nextViewController!]
-        } else {
-            let previousViewController = modelController.pageViewController(rootPageViewController!, viewControllerBefore: currentViewController)
-            viewControllers = [previousViewController!, currentViewController]
-        }
-        
-        rootPageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
-
-        return .mid
-    }
 }
 

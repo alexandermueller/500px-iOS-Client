@@ -248,7 +248,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             let infoWidth: Double = columns == 1 ? imageWidth : Double(scrollView.frame.width)
             
             // Update the scrollView's content height to match the new image and info view's heights
-            let contentHeight = infoY + infoHeight * (columns == 1 ? 0 : 1) + kCellMargin
+            let contentHeight = infoY + infoHeight * (columns == 1 ? 1 : 0) + kCellMargin
             scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: contentHeight)
             
             imageButton.layoutIfNeeded()
@@ -345,9 +345,9 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
                 lastPinchScale = pinchScale
             }
                     
-            // Change image drawing scale if the difference goes past the image scale threshold value,
-            // ie, pinching inwards increases the drawn columns on the screen, lowering the drawingScale
-            // of the images displayed and vice versa.
+            // Change image drawing scale if the pinch scale difference goes past the image scale threshold value,
+            // ie, pinching inwards increases the drawn columns on the screen, lowering the drawn scale of the
+            // images displayed and vice versa.
             if abs(lastPinchScale - pinchScale) * 10 > CGFloat(kImageScaleThresholdValue) {
                 drawingScale += (pinchVelocity > 0 ? 1 : -1)
                 scrollView.scrollToView(firstVisibleButton, animated: false)
