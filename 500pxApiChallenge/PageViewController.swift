@@ -239,23 +239,24 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     
 // MARK: - UIScrollView Delegate
     
-    private func findAndSetFirstVisibleButton() {
+    private func firstVisibleButtonInScrollView() -> UIButton? {
         for button in imageButtons {
             if scrollView.bounds.intersects(button.frame) {
-                firstVisibleButton = button
-                return
+                return button
             }
         }
+        
+        return nil
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            findAndSetFirstVisibleButton()
+            firstVisibleButton = firstVisibleButtonInScrollView()
         }
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        findAndSetFirstVisibleButton()
+        firstVisibleButton = firstVisibleButtonInScrollView()
     }
     
 // MARK: - UIButton Touch
