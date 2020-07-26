@@ -29,19 +29,21 @@ fileprivate class ValidatedPageDataSubject {
         validate()
     }
     
+    func getPageDataSubject() -> BehaviorSubject<PageData> {
+        return pageDataSubject
+    }
+    
+    /* validate:
+     * - Sets the isValid flag to true, and triggers a timer with the same duration as the API cache lifetime.
+     *   Once the timer is up, it invalidates the object by setting isValid to false.
+     */
     func validate() {
         isValid = true
-        
-        // Start timer and invalidate this cached object once the API cache lifetime is up
         validationTimer = Timer.scheduledTimer(withTimeInterval: kAPICacheLifeTimeInterval, repeats: false, block: { [weak self] timer in
             DispatchQueue.main.async {
                 self?.isValid = false
             }
         })
-    }
-    
-    func getPageDataSubject() -> BehaviorSubject<PageData> {
-        return pageDataSubject
     }
     
     /* value:

@@ -13,22 +13,18 @@ import UIKit
 // https://www.hackingwithswift.com/example-code/uikit/how-to-load-a-remote-image-url-into-uiimageview
 
 extension UIButton {
-    /* load:lowestSizeURL:largestSizeURL:
+    /* load:imageURL:
      * - Fetches the images at the given url on a background thread, setting it
      *   on success to the UIButton's image view.
      */
-    func load(imageURL: URL?, toBackground: Bool = false) {
+    func load(imageURL: URL?) {
         DispatchQueue.global().async { [weak self] in
             do {
                 if let url = imageURL {
                     let data = try Data(contentsOf: url)
                     if let image = UIImage(data: data) {
                         DispatchQueue.main.async {
-                            if toBackground {
-                                self?.setBackgroundImage(image, for: .normal)
-                            } else {
-                                self?.setImage(image, for: .normal)
-                            }
+                            self?.setImage(image, for: .normal)
                         }
                     }
                 }

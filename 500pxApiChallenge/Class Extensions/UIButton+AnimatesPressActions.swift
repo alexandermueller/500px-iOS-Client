@@ -14,6 +14,9 @@ import UIKit
 // This allows the toggling of animations to a UIButton on touch events.
 
 extension UIButton {
+    /* animatesPressActions:shouldAnimate:
+     * - Adds/removes triggers for animateDown and animateUp on UIButtons for touch actions.
+     */
     func animatesPressActions(_ shouldAnimate: Bool) {
         if shouldAnimate {
             addTarget(self, action: #selector(animateDown), for: [.touchDown, .touchDragEnter])
@@ -24,14 +27,23 @@ extension UIButton {
         }
     }
 
+    /* animateDown:sender:
+     * - Triggers a down press animation on the sender.
+     */
     @objc private func animateDown(sender: UIButton) {
         animate(sender, transform: CGAffineTransform.identity.scaledBy(x: 0.95, y: 0.95))
     }
 
+    /* animateUp:sender:
+     * - Triggers a lift up animation on the sender.
+     */
     @objc private func animateUp(sender: UIButton) {
         animate(sender, transform: .identity)
     }
 
+    /* animate:button:transform:
+     * - Convenience function for an animation on a button with predetermined animation settings.
+     */
     private func animate(_ button: UIButton, transform: CGAffineTransform) {
         UIView.animate(withDuration: 0.4,
                        delay: 0,

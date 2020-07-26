@@ -47,7 +47,6 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         self.rootPageViewController = rootPageViewController
         let pageDataSubject = fetchPageDataFor(index: 0)
         
-        // TODO: This will only update pageCount once. Maybe move this into a better spot for continuous updates
         pageDataSubject.subscribe(onNext: { [weak self] pageData in
             DispatchQueue.main.async {
                 self?.pageCount = pageData.totalPages
@@ -103,7 +102,8 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     }
 
     // MARK: - Page View Controller Data Source
-
+    // These are the stock included methods (modified slightly) for grabbing the previous/next ViewControllers after opening a "Page Style Project" in Xcode.
+    
     func pageViewController(_ rootPageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         var index = (viewController as! PageViewController).pageNumber - 1
         

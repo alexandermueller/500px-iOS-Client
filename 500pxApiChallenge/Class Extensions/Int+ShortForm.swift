@@ -12,7 +12,7 @@ fileprivate let kAbbreviatedNumberMarkers = ["", "k", "m", "b"]
 
 extension Int {
     /* shortForm:
-     * - Returns a (3 digit maximum) representation of the Integer's value pegged to the nearest power of 1000.
+     * - Returns a 1-3 digit representation of the Integer's value pegged to the nearest power of 1000.
      * - If values matching or exceeding the final marker in the above list are shortened, they are pegged to the
      *   final marker and displayed as "1.0<final_marker>+"
      *
@@ -34,6 +34,7 @@ extension Int {
         
         let shortened: Double = Double(self) / (pow(10.0, 3 * powersOfThousand) as NSNumber).doubleValue
         
+        // Display up to 3 digits without a decimal if the value is < 1000
         if powersOfThousand == 0 {
             return String(Int(shortened))
         }
