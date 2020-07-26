@@ -248,7 +248,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             let infoWidth: Double = columns == 1 ? imageWidth : Double(scrollView.frame.width)
             
             // Update the scrollView's content height to match the new image and info view's heights
-            let contentHeight = infoY + infoHeight * (columns == 1 ? 1 : 0) + kCellMargin
+            let contentHeight = infoY + (columns == 1 ? infoHeight : 0) + kCellMargin
             scrollView.contentSize = CGSize(width: Double(scrollView.frame.width), height: contentHeight)
             
             imageButton.layoutIfNeeded()
