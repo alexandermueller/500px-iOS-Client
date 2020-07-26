@@ -28,7 +28,7 @@ extension Int {
         let powersOfTen: Int = Int(log10(Double(self)))
         let powersOfThousand: Int = powersOfTen / 3
         
-        guard powersOfThousand < kAbbreviatedNumberMarkers.count else {
+        guard powersOfThousand < kAbbreviatedNumberMarkers.count - 1 else {
             return "1.0\(kAbbreviatedNumberMarkers.last ?? "!")+"
         }
         
@@ -39,15 +39,15 @@ extension Int {
             return String(Int(shortened))
         }
         
-        var shortenedString = ""
+        // Represent the shortened value to 3 significant digits
+        var shortenedString = String(format: "%.\(2 - powersOfTen % 3)f", shortened)
         
-        // Display the first 3 significant digits of the value (omitting the decimal if there are 3 significant digits ahead of it)
-        if powersOfTen % 3 == 2 {
-            shortenedString = String(Int(shortened)) + kAbbreviatedNumberMarkers[powersOfThousand]
-        } else {
-            shortenedString = String(String(shortened).prefix(4)) + kAbbreviatedNumberMarkers[powersOfThousand]
+        // Drop trailing 0
+        if shortenedString.contains(".") && shortenedString.suffix(2) != ".0" {
+            shortenedString = String(shortenedString.dropLast(shortenedString.suffix(1) == "0" ? 1 : 0))
         }
         
-        return shortenedString
+        // Display the first 3 significant digits of the value (omitting the decimal if there are 3 significant digits ahead of it)
+        return shortenedString + kAbbreviatedNumberMarkers[powersOfThousand]
     }
 }
