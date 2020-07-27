@@ -58,14 +58,14 @@ Page data subjects are essentially `BehaviorSubjects<PageData>` types, where Pag
 returned JSON requests from the API into a nested struct format. I've cherry-picked potentially important JSON keys from the API and used them to build 
 the following data structures:
 ```
-struct PageData: Coder
+struct PageData: Codable
 |-> currentPage: Int
 |-> totalPages: Int
 |-> totalItems: Int
 |-> feature: String
 +-> photos: [ImageData]
 
-struct ImageData: Coder
+struct ImageData: Codable
 |-> name: String
 |-> user: User
 |-> description: String
@@ -76,7 +76,7 @@ struct ImageData: Coder
 |-> timesViewed: Int
 +-> images: [Image]
 
-struct Image: Coder
+struct Image: Codable
 |-> format: String
 |-> size: Int
 |-> url: String
