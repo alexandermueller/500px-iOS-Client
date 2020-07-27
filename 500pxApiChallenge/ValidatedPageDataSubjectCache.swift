@@ -12,19 +12,16 @@ import RxSwift
 /* ValidatedPageDataSubject
  * - A self-invalidating PageData subject wrapper class.
  *
- *           index: The corresponding page index of the PageData
  *         isValid: A flag that determines if the data stored is still fresh and doesn't require refreshing
  * pageDataSubject: The PageData subject returned by requests made through the APIManager
  * validationTimer: A timer that invalidates the object as soon as the timer runs out
  */
 fileprivate class ValidatedPageDataSubject {
-    private var index: Int
     private var isValid = false
     private var pageDataSubject: BehaviorSubject<PageData>
     private var validationTimer: Timer = Timer()
     
-    init(_ pageDataSubject: BehaviorSubject<PageData>, index: Int) {
-        self.index = index
+    init(_ pageDataSubject: BehaviorSubject<PageData>) {
         self.pageDataSubject = pageDataSubject
         validate()
     }
@@ -89,6 +86,6 @@ class ValidatedPageDataSubjectCache {
             return
         }
         
-        cache[index] = ValidatedPageDataSubject(pageDataSubject, index: index)
+        cache[index] = ValidatedPageDataSubject(pageDataSubject)
     }
 }
