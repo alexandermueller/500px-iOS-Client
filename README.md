@@ -2,9 +2,11 @@
 
 A multi-paged, scrolling, zoomable application that hooks into 500px's API and displays images and their information from their "popular" features page.
 
-Video of app in action: 
+Video of app in action:
 
 [![500px iOS Client](http://i3.ytimg.com/vi/Z0taVhwj3EY/hqdefault.jpg)](https://www.youtube.com/watch?v=Z0taVhwj3EY)
+
+*(click image to link to video)*
 
 Overall Controller Hierarchy:
 -----------------------------
