@@ -2,7 +2,7 @@
 
 A multi-paged, scrolling, zoomable application that hooks into 500px's API and displays images and their information from their "popular" features page.
 
-Video of app in action: https://photos.app.goo.gl/Vgjuxec34sudC4wdA
+Video of app in action: https://www.youtube.com/embed/Z0taVhwj3EY
 
 Overall Controller Hierarchy:
 -----------------------------
