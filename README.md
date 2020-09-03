@@ -6,7 +6,7 @@ Video of app in action:
 
 [![500px iOS Client](http://i3.ytimg.com/vi/Z0taVhwj3EY/hqdefault.jpg)](https://www.youtube.com/watch?v=Z0taVhwj3EY)
 
-*(click image to link to video)*
+*(click image to visit video link)*
 
 Overall Controller Hierarchy:
 -----------------------------
