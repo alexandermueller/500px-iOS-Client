@@ -146,7 +146,7 @@ Requirements:
 The reason I why chose iOS 13.0+ is because it is the first iOS that supports the new System symbols supplied by Apple 
 (which I used inside ImageInfoView for the "username", "thumbs up" (positive ranks), total "views", and total "comments" information for each image.)
 
-API Consumer Key Setup Steps + Instructions For Running This Application:
+(Optional) API Consumer Key Setup Steps + Instructions For Running This Application:
 -------------------------------------------------------------------------
 ```
 1. Clone the 500pxApiChallenge project
