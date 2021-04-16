@@ -51,9 +51,9 @@ let kCellMargin = 1.0
  *     pageDataSubject: The page data source for the current view controller
  *                 bag: A DisposeBag that performs trash collection after RxSwift interactions lose scope
  */
-class PageViewController: UIViewController, UIScrollViewDelegate {
+class PageViewController: UIViewController {
 
-// MARK: - UI Variables
+    // MARK: - UI Variables
     
     @IBOutlet weak var pageLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -81,7 +81,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     }
     private var lastScrollViewFrame: CGRect? = nil
     
-// MARK: - Scale Variables
+    // MARK: - Scale Variables
     
     private var drawingScale = kMaxDrawingScale {
         didSet {
@@ -95,7 +95,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     private var lastPinchScale: CGFloat = 0.0
     private var lastPinchVelocity: CGFloat = 0.0
     
-// MARK: - Image Variables
+    // MARK: - Image Variables
     
     private var firstVisibleButton: UIView? = nil
     private var imageButtons: [UIButton] = []
@@ -103,7 +103,7 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     private var pageDataSubject = BehaviorSubject<PageData>(value: .defaultPageData())
     private var bag = DisposeBag()
     
-// MARK: - Setup And ViewController Methods
+    // MARK: - Setup And ViewController Methods
     
     /* initializeWith:feature:pageNumber:pageCount:pageDataSubject:
      * - Sets up the view controller with the corresponding feature, page number, page count, and PageData subject.
@@ -145,9 +145,11 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             scrollView.scrollToView(firstVisibleButton, animated: false)
         }
     }
-    
+}
+
 // MARK: - Image Drawing Methods
-    
+
+extension PageViewController {
     /* updateImageViews:with:imageData:
      * - Clears the scrollView and generates a new imageButton and imageView for each image in the provided ImageData array.
      */
@@ -281,9 +283,10 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
-    
+}
+
 // MARK: - UIScrollView Delegate
-    
+extension PageViewController: UIScrollViewDelegate {
     /* firstVisibleButtonInScrollView:
      * - Iterates imageButtons and returns the first imageButton that intersects with the scrollView's bounds.
      *   Essentially, returning the first visible imageButton in the scrollView (always the top-left-most image
@@ -313,9 +316,11 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         firstVisibleButton = firstVisibleButtonInScrollView()
     }
-    
-// MARK: - UIButton Touch
-    
+}
+
+// MARK: - UIButton Touch & Pinch Gesture Recognizer
+
+extension PageViewController {
     // Whenever the user finishes a touch inside the imageButton, maximize the drawing scale
     // (triggering a redraw), and scroll to and set the firstVisibleButton to the tapped imageButton.
     
@@ -325,8 +330,6 @@ class PageViewController: UIViewController, UIScrollViewDelegate {
         scrollView.scrollToView(sender, animated: previousDrawingScale == kMaxDrawingScale)
         firstVisibleButton = sender
     }
-    
-// MARK: - UIPinchGestureRecognizer
     
     // Maps pinch gestures on the scrollView to change the drawing scale of the images displayed
     // inside the scrollView.
