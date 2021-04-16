@@ -92,4 +92,5 @@ iOSInjectionProject/
 # Other Stuff
 
 .DS_Store
-API.key
+# This was supposed to be secret, but honestly it really doesn't matter anymore.
+# API.key
